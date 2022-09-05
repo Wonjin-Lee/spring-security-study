@@ -1,5 +1,7 @@
 package io.ader.security.basicsecurity.config;
 
+import io.ader.security.basicsecurity.component.SessionStorageSample;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +22,10 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private SessionStorageSample sessionStorageSample;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -36,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         System.out.println("Authentication " + authentication.getName());
+                        sessionStorageSample.saveSession("test-token", request.getRequestedSessionId());
                         response.sendRedirect("/");
                     }
                 }) // 로그인 성공 후 핸들러
