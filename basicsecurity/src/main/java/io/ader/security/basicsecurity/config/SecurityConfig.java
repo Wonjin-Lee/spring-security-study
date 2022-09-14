@@ -37,6 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .rememberMeParameter("remember-me")
                     .tokenValiditySeconds(3600);
 
+        http.sessionManagement()
+                .maximumSessions(1) // 최대 허용 가능 세션, -1 : 무제한 로그인 세션 허용
+                .maxSessionsPreventsLogin(false) // 동시 로그인 차단, false : 기존 세션 만료(default)
+                .expiredUrl("/expired") // 세션이 만료된 경우 이동 할 페이지
+                .and().invalidSessionUrl("/invalid"); // 세션이 유효하지 않을 때 이동 할 페이지
+
         http.formLogin()
                 .defaultSuccessUrl("/") // 로그인 성공 후 이동 페이지
                 .failureUrl("/login") // 로그인 실패 후 이동 페이지
